@@ -36,35 +36,29 @@ def PostprocessReactions(K, d, F, n_unknowns, nodes):
 
 # determine internal member load
 def ComputeMemberForces(bars):
-    # COMPLETE THIS FUNCTION
-    # Compute member forces for all bars using equation 14-23 
     for bar in bars:
 
-    # Extract member properties
         E = bar.E
         A = bar.A
-        L = bar.Length()
+        L = bar.Length() * 12  # Convert feet to inches
+
         [lambdax, lambday] = bar.LambdaTerms()
 
-    # Extract initial and end nodes
         init_node = bar.init_node
         end_node = bar.end_node
 
-    # Extract nodal displacements
         u1 = init_node.xdisp
         v1 = init_node.ydisp
         u2 = end_node.xdisp
         v2 = end_node.ydisp
 
-    # Calculate internal axial force
         axial_load = (E * A / L) * (
             -lambdax * u1
             -lambday * v1
             +lambdax * u2
             +lambday * v2
-    )
+        )
 
-    # Store axial load in bar
         bar.axial_load = axial_load
 
     return bars
@@ -90,28 +84,22 @@ def ComputeNormalStresses(bars):
 
 # compute the critical buckling load of a member
 def ComputeBucklingLoad(bars):
-    # Compute critical buckling load for all bars
-
     for bar in bars:
 
-        # Extract member properties
         E = bar.E
-        L = bar.Length()
+        L = bar.Length() * 12  # Convert feet to inches
 
-        # Effective length factor for trusses
         K = 1.0
 
-        # Extract strong and weak axis moments of inertia
         I_strong = bar.GetStrongSecondMoment()
         I_weak = bar.GetWeakSecondMoment()
 
-        # Select the weakest axis
         I = min(I_strong, I_weak)
 
-        # Calculate critical buckling load
         Pcr = (np.pi**2 * E * I) / ((K * L)**2)
 
-        # Store critical buckling load in bar
         bar.buckling_load = Pcr
+
+    return bars
 
     return bars
