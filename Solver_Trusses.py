@@ -40,7 +40,7 @@ def ComputeMemberForces(bars):
 
         E = bar.E
         A = bar.A
-        L = bar.Length() * 12  # Convert feet to inches
+        L = bar.Length()  # Keep original length units
 
         [lambdax, lambday] = bar.LambdaTerms()
 
@@ -66,18 +66,13 @@ def ComputeMemberForces(bars):
         
 # compute the normal stresses
 def ComputeNormalStresses(bars):
-    # Compute normal stress for all bars
-
     for bar in bars:
 
-        # Extract axial force and cross-sectional area
         axial_load = bar.axial_load
         A = bar.A
 
-        # Calculate normal stress
         normal_stress = axial_load / A
 
-        # Store normal stress in bar
         bar.normal_stress = normal_stress
 
     return bars
@@ -87,7 +82,7 @@ def ComputeBucklingLoad(bars):
     for bar in bars:
 
         E = bar.E
-        L = bar.Length() * 12  # Convert feet to inches
+        L = bar.Length() * 12
 
         K = 1.0
 
@@ -99,7 +94,5 @@ def ComputeBucklingLoad(bars):
         Pcr = (np.pi**2 * E * I) / ((K * L)**2)
 
         bar.buckling_load = Pcr
-
-    return bars
 
     return bars
